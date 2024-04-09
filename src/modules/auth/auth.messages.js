@@ -5,6 +5,7 @@ const AuthMessages = Object.freeze({
   OtpCodeExpired: 'otp code is expired',
   OtpCodeNotMatched: 'otp code is not matched',
   LoggedInSuccessfully: 'logged in successfully',
+  LoggedOutSuccessfully: 'logged out successfully',
 });
 
 module.exports = AuthMessages;

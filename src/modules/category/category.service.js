@@ -1,9 +1,9 @@
 const autoBind = require('auto-bind');
 const createHttpError = require('http-errors');
 const { categoryModel } = require('./category.model');
-const { isValidObjectId, Types } = require('mongoose');
 const CategoryMessages = require('./category.messages');
-const { default: slugify } = require('slugify');
+const { isValidObjectId, Types } = require('mongoose');
+const slugify = require('slugify');
 
 class CategoryService {
   constructor() {
@@ -34,10 +34,10 @@ class CategoryService {
     }
 
     if (createCategoryDto?.slug) {
-      createCategoryDto.slug = slugify(createCategoryDto.slug, { lower: true });
+      createCategoryDto.slug = slugify(createCategoryDto.slug, { lower: true, trim: true });
       await this.alreadyExistSlug(createCategoryDto.slug);
     } else {
-      createCategoryDto.slug = slugify(createCategoryDto.name, { lower: true });
+      createCategoryDto.slug = slugify(createCategoryDto.name, { lower: true, trim: true });
     }
 
     const newCategory = await categoryModel.create(createCategoryDto);

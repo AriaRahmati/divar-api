@@ -10,7 +10,11 @@ class CategoryService {
     autoBind(this);
   }
 
-  async getAll() {}
+  async getAll() {
+    const categories = await categoryModel.find({ parent: { $exists: false } }).populate([{ path: 'children' }]);
+
+    return categories;
+  }
 
   async create(createCategoryDto) {
     if (createCategoryDto?.parent) {

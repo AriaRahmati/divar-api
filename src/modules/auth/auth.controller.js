@@ -3,6 +3,7 @@ const AuthService = require('./auth.service');
 const AuthMessages = require('./auth.messages');
 const NodeEnv = require('../../common/constant/env.enum');
 const CookieNames = require('../../common/constant/cookies.enum');
+const { StatusCodes } = require('http-status-codes');
 
 class AuthController {
   #service;
@@ -36,7 +37,7 @@ class AuthController {
           secure: process.env.NODE_ENV === NodeEnv.PRODUCTION, // secure cookie equals true in production
           sameSite: true,
         })
-        .status(200)
+        .status(StatusCodes.OK)
         .json({
           message: AuthMessages.LoggedInSuccessfully,
         });
@@ -49,7 +50,7 @@ class AuthController {
     try {
       return res
        .clearCookie(CookieNames.AccessToken)
-       .status(200)
+       .status(StatusCodes.OK)
        .json({
           message: AuthMessages.LoggedOutSuccessfully,
         });

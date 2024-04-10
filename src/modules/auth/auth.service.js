@@ -58,7 +58,7 @@ class AuthService {
       await user.save();
     }
 
-    const token = this.signToken({ id: user.id, mobile: user.mobile });
+    const token = this.signToken({ _id: user._id, mobile: user.mobile });
 
     return token;
   }

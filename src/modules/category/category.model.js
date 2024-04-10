@@ -2,10 +2,10 @@ const { Schema, Types, model } = require('mongoose');
 
 const categorySchema = new Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String, index: true, required: true },
     slug: { type: String, index: true, required: true },
     icon: { type: String, required: true },
-    parent: { type: Types.ObjectId, ref: 'Category', required: false },
+    parent: { type: Types.ObjectId, ref: 'Category', index: true, required: false },
     parents: { type: [Types.ObjectId], ref: 'Category', required: false, default: [] },
   },
   {
@@ -15,6 +15,8 @@ const categorySchema = new Schema(
     toJSON: { virtuals: true },
   }
 );
+
+categorySchema.index({ parent: 1, name: 1 });
 
 categorySchema.virtual('children', {
   ref: 'Category',

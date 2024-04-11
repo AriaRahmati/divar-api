@@ -1,11 +1,11 @@
 const autoBind = require('auto-bind');
 const createHttpError = require('http-errors');
 const { optionModel } = require('./option.model');
-const { categoryModel } = require('../category/category.model');
 const OptionMessages = require('./option.messages');
-const { isValidObjectId, Types } = require('mongoose');
+const { isValidObjectId } = require('mongoose');
 const slugify = require('slugify');
-const { checkExistById } = require('../category/category.service');
+const categoryService = require('../category/category.service');
+const { isTrue, isFalse } = require('../../common/utils/functions');
 
 class OptionService {
   constructor() {
@@ -78,7 +78,7 @@ class OptionService {
         throw new createHttpError.BadRequest(OptionMessages.CategoryIdNotValid);
       }
 
-      const category = await this.checkCategoryExistById(createOptionDto.category);
+      const category = await categoryService.checkExistById(createOptionDto.category);
       createOptionDto.category = category._id;
     }
 
@@ -87,11 +87,59 @@ class OptionService {
 
     if (createOptionDto.enum && typeof createOptionDto.enum === 'string') {
       createOptionDto.enum = createOptionDto.enum.split(',');
-    } else if (Array.isArray(createOptionDto.enum)) {
+    } else if (!Array.isArray(createOptionDto.enum)) {
       createOptionDto.enum = [];
     }
 
+    if (isTrue(createOptionDto.required)) {
+      createOptionDto.required = true;
+    } else if (isFalse(createOptionDto.required)) {
+      createOptionDto.required = false;
+    }
+
     const newOption = await optionModel.create(createOptionDto);
+
+    return newOption;
+  }
+
+  async update(id, updateOptionDto) {
+    if (updateOptionDto?.category) {
+      if (!isValidObjectId(updateOptionDto.category)) {
+        throw new createHttpError.BadRequest(OptionMessages.CategoryIdNotValid);
+      }
+
+      const category = await categoryService.checkExistById(updateOptionDto.category);
+      updateOptionDto.category = category._id;
+    } else {
+      delete updateOptionDto.category;
+    }
+
+    updateOptionDto.key = slugify(updateOptionDto.key, { lower: true, trim: true, replacement: '_' });
+    await this.checkKeyInOptionsCategoryExist(updateOptionDto.category, updateOptionDto.key);
+
+    if (updateOptionDto.enum && typeof updateOptionDto.enum === 'string') {
+      updateOptionDto.enum = updateOptionDto.enum.split(',');
+    } else if (!Array.isArray(updateOptionDto.enum)) {
+      delete updateOptionDto.enum;
+    }
+
+    if (isTrue(updateOptionDto.required)) {
+      updateOptionDto.required = true;
+    } else if (isFalse(updateOptionDto.required)) {
+      updateOptionDto.required = false;
+    } else {
+      delete updateOptionDto.required;
+    }
+
+    const updatedOption = await optionModel.findByIdAndUpdate(id, { $set: updateOptionDto });
+
+    return updatedOption;
+  }
+
+  async deleteById(_id) {
+    const option = await this.checkExistById(_id);
+
+    return await option.deleteOne();
   }
 
   async checkExistById(_id) {

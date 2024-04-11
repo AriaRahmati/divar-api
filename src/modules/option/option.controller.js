@@ -56,10 +56,33 @@ class OptionController {
 
   async create(req, res, next) {
     try {
-      const { title, key, guide, enum: enumValue, type, category } = req.body;
-      await this.#service.create({ title, key, guide, enum: enumValue, type, category });
+      const { title, key, guide, enum: enumValue, type, category, required } = req.body;
+      await this.#service.update({ title, key, guide, enum: enumValue, type, category });
 
       return res.status(StatusCodes.CREATED).send({ message: OptionMessages.Created });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async update(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { title, key, guide, enum: enumValue, type, category, required } = req.body;
+      await this.#service.update(id, { title, key, guide, enum: enumValue, type, category, required });
+
+      return res.status(StatusCodes.OK).send({ message: OptionMessages.Updated });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteById(req, res, next) {
+    try {
+      const { id } = req.params;
+      await this.#service.deleteById(id);
+
+      return res.status(StatusCodes.OK).send({ message: OptionMessages.Deleted });
     } catch (error) {
       next(error);
     }

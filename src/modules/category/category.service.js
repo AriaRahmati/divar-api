@@ -4,6 +4,7 @@ const { categoryModel } = require('./category.model');
 const CategoryMessages = require('./category.messages');
 const { isValidObjectId, Types } = require('mongoose');
 const slugify = require('slugify');
+const { optionModel } = require('../option/option.model');
 
 class CategoryService {
   constructor() {
@@ -43,6 +44,16 @@ class CategoryService {
     const newCategory = await categoryModel.create(createCategoryDto);
 
     return newCategory;
+  }
+
+  async deleteById(_id) {
+    const category = await this.checkExistById(_id);
+
+    await optionModel.deleteMany({ category: _id }).then(async () => {
+      await category.deleteOne();
+    });
+
+    return true;
   }
 
   async checkExistById(_id) {

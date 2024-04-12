@@ -11,4 +11,16 @@ MainRouter.use('/user', UserRouter);
 MainRouter.use('/category', CategoryRouter);
 MainRouter.use('/option', OptionRouter);
 
+MainRouter.get('/', (req, res, next) => {
+  res.locals.layouts = 'layouts/website/main';
+  res.render('pages/home/index', { posts: [] });
+});
+MainRouter.get('/panel', (req, res, next) => {
+  res.render('pages/panel/dashboard');
+});
+MainRouter.get('/auth/login', (req, res, next) => {
+  res.locals.layouts = 'layouts/auth/main';
+  res.render('pages/auth/login');
+});
+
 module.exports = MainRouter;

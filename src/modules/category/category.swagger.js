@@ -55,3 +55,20 @@
  *      200:
  *        description: Success
  */
+
+/**
+ * @swagger
+ * /category/{id}:
+ *  delete:
+ *    tags:
+ *      - Category
+ *    summary: delete a category
+ *    description: delete a category
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        type: string
+ *    responses:
+ *      200:
+ *        description: Success
+ */

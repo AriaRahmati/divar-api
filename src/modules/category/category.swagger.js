@@ -38,6 +38,9 @@
  *        application/x-www-form-urlencoded:
  *          schema:
  *            $ref: '#/components/schemas/CreateCategory'
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/CreateCategory'
  *    responses:
  *      201:
  *        description: Created

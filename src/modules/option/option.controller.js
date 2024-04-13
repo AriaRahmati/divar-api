@@ -57,7 +57,7 @@ class OptionController {
   async create(req, res, next) {
     try {
       const { title, key, guide, enum: enumValue, type, category, required } = req.body;
-      await this.#service.update({ title, key, guide, enum: enumValue, type, category });
+      await this.#service.create({ title, key, guide, enum: enumValue, type, category, required });
 
       return res.status(StatusCodes.CREATED).send({ message: OptionMessages.Created });
     } catch (error) {

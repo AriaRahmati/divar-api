@@ -53,6 +53,11 @@ class CategoryService {
       await category.deleteOne();
     });
 
+    const children = await categoryModel.find({ parent: _id });
+    children.forEach(async (child) => {
+      await this.deleteById(child._id);
+    });
+
     return true;
   }
 
